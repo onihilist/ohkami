@@ -170,7 +170,7 @@ use crate::{__rt__, session};
 ///
 /// ### native async runtimes
 ///
-/// `.howl(address)` to start serving.
+/// `.run(address)` to start serving.
 ///
 /// ```no_run
 /// # fn my_ohkami() -> ohkami::Ohkami {ohkami::Ohkami::new(())}
@@ -179,7 +179,7 @@ use crate::{__rt__, session};
 /// async fn main() {
 ///     let o = my_ohkami();
 ///     
-///     o.howl("localhost:5000").await
+///     o.run("localhost:5000").await
 /// }
 /// ```
 ///
@@ -343,7 +343,7 @@ use crate::{__rt__, session};
 ///     Ohkami::new((
 ///         Context::new(PostgresUserRepository(pool)),
 ///         "/users".By(users_ohkami::<PostgresUserRepository>()),
-///     )).howl("0.0.0.0:4040").await
+///     )).run("0.0.0.0:4040").await
 /// }
 /// ```
 pub struct Ohkami {
@@ -596,7 +596,7 @@ impl Ohkami {
     ///     Ohkami::new((
     ///         "/".GET(hello),
     ///         "/healthz".GET(health_check),
-    ///     )).howl("localhost:5000").await
+    ///     )).run("localhost:5000").await
     /// }
     /// ```
     ///
@@ -617,13 +617,13 @@ impl Ohkami {
     ///         "/".GET(async || {
     ///             "Hello, TcpListener!"
     ///         }),
-    ///     )).howl(listener).await;
+    ///     )).run(listener).await;
     ///
     ///     Ok(())
     /// }
     /// ```
     #[cfg(feature = "__rt_native__")]
-    pub async fn howl<T>(self, bind: impl __rt__::IntoTcpListener<T>) {
+    pub async fn run<T>(self, bind: impl __rt__::IntoTcpListener<T>) {
         self.howl_core(
             bind,
             #[cfg(feature = "tls")]
@@ -638,7 +638,7 @@ impl Ohkami {
     /// `howls` takes an additional parameter than `howl`:
     /// A `rutsls::ServerConfig` containing your certificates and keys.
     ///
-    /// See [`howl`] for the `bind` argument.
+    /// See [`run`] for the `bind` argument.
     ///
     /// Example:
     ///
@@ -806,7 +806,7 @@ impl Ohkami {
     ///         ]
     ///      });
     ///
-    ///     o.howl("localhost:5000").await
+    ///     o.run("localhost:5000").await
     /// }
     /// ```
     pub fn generate(&self, metadata: crate::openapi::OpenAPI) {
@@ -1113,7 +1113,7 @@ mod test {
         __rt__::testing::block_on(async {
             crate::util::with_timeout(
                 std::time::Duration::from_secs(3),
-                Ohkami::new(()).howl(("localhost", __rt__::testing::PORT)),
+                Ohkami::new(()).run(("localhost", __rt__::testing::PORT)),
             )
             .await
         });

@@ -189,7 +189,7 @@ async fn main() {
     ));
     
     #[cfg(not(feature="tls"))]
-    o.howl("localhost:3030").await;
+    o.run("localhost:3030").await;
     
     #[cfg(feature="tls")]
     o.howls("localhost:3030", tls_config).await;
